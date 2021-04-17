@@ -117,6 +117,21 @@ class Stronicowanie
         return $linki;
     }
 
+    public function pobierzPodsumowanie(string $select): string
+    {
+        $rekordow = $this->db->policzRekordy($select, $this->parametryZapytania);
+        $start = ($this->strona * $this->naStronie) + 1;
+        $koniec = $start + $this->naStronie - 1;
+        $podumowanieStrony = sprintf("Wyświetlono %s - %s z %s rekordów <br />",
+            $start,
+            min($koniec, $rekordow),
+            $rekordow
+        );
+
+        return $podumowanieStrony;
+    }
+
+
     /**
      * Przetwarza parametry wyszukiwania.
      * Wyrzuca zbędne elementy i tworzy gotowy do wstawienia w linku zestaw parametrów.
