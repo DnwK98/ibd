@@ -57,6 +57,4 @@ $dane = $ksiazki->pobierz($id);
 	<a href="ksiazki.lista.php"><i class="fas fa-chevron-left"></i> Powrót</a>
 </p>
 
-<p>szczegóły książki......</p>
-
 <?php include 'footer.php'; ?>
