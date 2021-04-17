@@ -79,8 +79,15 @@ class Ksiazki
 
         // dodawanie warunków do zapytanie
         if (!empty($params['fraza'])) {
-            $sql .= "AND k.tytul LIKE :fraza ";
-            $parametry['fraza'] = "%$params[fraza]%";
+            $czesciFrazy = [];
+            foreach (['k.tytul', 'k.opis', 'CONCAT(a.nazwisko, " ", a.imie)'] as $kolumna){
+                $nazwaParametru = "param_" . (count($parametry) + 1);
+                $czesciFrazy[] = "$kolumna LIKE :{$nazwaParametru}";
+                $parametry[$nazwaParametru] = "%{$params['fraza']}%";
+            }
+            $sqlFrazy = implode(' OR ', $czesciFrazy);
+            $sql .= "AND ($sqlFrazy)";
+
         }
         if (!empty($params['id_kategorii'])) {
             $sql .= "AND k.id_kategorii = :id_kategorii ";
