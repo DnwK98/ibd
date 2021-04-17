@@ -9,37 +9,37 @@ class Stronicowanie
      *
      * @var Db
      */
-    private $db;
+    private Db $db;
 
     /**
      * Liczba rekordów wyświetlanych na stronie.
      *
      * @var int
      */
-    private $naStronie = 5;
+    private int $naStronie = 5;
 
     /**
      * Aktualnie wybrana strona.
      *
      * @var int
      */
-    private $strona = 0;
+    private int $strona = 0;
 
     /**
      * Dodatkowe parametry przekazywane w pasku adresu (metodą GET).
      *
      * @var array
      */
-    private $parametryGet = [];
+    private array $parametryGet = [];
 
     /**
      * Parametry przekazywane do zapytania SQL.
      *
      * @var array
      */
-    private $parametryZapytania;
+    private array $parametryZapytania;
 
-    public function __construct($parametryGet, $parametryZapytania)
+    public function __construct(array $parametryGet , array $parametryZapytania = [])
     {
         $this->db = new Db();
         $this->parametryGet = $parametryGet;
@@ -71,10 +71,21 @@ class Stronicowanie
     public function pobierzLinki(string $select, string $plik): string
     {
         $rekordow = $this->db->policzRekordy($select, $this->parametryZapytania);
-        $liczbaStron = ceil($rekordow / $this->naStronie);
+        $liczbaStron = (int)ceil($rekordow / $this->naStronie);
         $parametry = $this->_przetworzParametry();
 
         $linki = "<nav><ul class='pagination'>";
+        $linki .= sprintf("<li class='page-item %s'><a href='%s?%s&strona=0' class='page-link'>Początek</a></li>",
+            $this->strona === 0 ? 'disabled' : '',
+            $plik,
+            $parametry
+        );
+        $linki .= sprintf("<li class='page-item %s'><a href='%s?%s&strona=%s' class='page-link'>Poprzednia</a></li>",
+            $this->strona === 0 ? 'disabled' : '',
+            $plik,
+            $parametry,
+            $this->strona - 1
+        );
         for ($i = 0; $i < $liczbaStron; $i++) {
             if ($i == $this->strona) {
                 $linki .= sprintf("<li class='page-item active'><a class='page-link'>%d</a></li>", $i + 1);
@@ -88,10 +99,38 @@ class Stronicowanie
                 );
             }
         }
+        $linki .= sprintf("<li class='page-item %s'><a href='%s?%s&strona=%s' class='page-link'>Następna</a></li>",
+            $this->strona === $liczbaStron - 1 ? 'disabled' : '',
+            $plik,
+            $parametry,
+            $this->strona + 1
+        );
+
+        $linki .= sprintf("<li class='page-item %s'><a href='%s?%s&strona=%s' class='page-link'>Koniec</a></li>",
+            $this->strona === $liczbaStron - 1 ? 'disabled' : '',
+            $plik,
+            $parametry,
+            $liczbaStron - 1,
+        );
         $linki .= "</ul></nav>";
 
         return $linki;
     }
+
+    public function pobierzPodsumowanie(string $select): string
+    {
+        $rekordow = $this->db->policzRekordy($select, $this->parametryZapytania);
+        $start = ($this->strona * $this->naStronie) + 1;
+        $koniec = $start + $this->naStronie - 1;
+        $podumowanieStrony = sprintf("Wyświetlono %s - %s z %s rekordów <br />",
+            $start,
+            min($koniec, $rekordow),
+            $rekordow
+        );
+
+        return $podumowanieStrony;
+    }
+
 
     /**
      * Przetwarza parametry wyszukiwania.
