@@ -48,4 +48,27 @@ class Zamowienia
         }
     }
 
+    public function pobierzZamowienia(): array
+    {
+        $sql = "SELECT *, s.cena as cena_zamowienia_ksiazki FROM zamowienia z 
+                    LEFT JOIN zamowienia_szczegoly s on z.id = s.id_zamowienia
+                    LEFT JOIN ksiazki k on s.id_ksiazki = k.id
+                    LEFT JOIN zamowienia_statusy st on z.id_statusu = st.id
+                WHERE z.id_uzytkownika = :id_uzytkownika";
+
+        $rekordy = $this->db->pobierzWszystko($sql, ['id_uzytkownika' => $_SESSION['id_uzytkownika']]);
+
+        $zamowienia = [];
+
+        foreach ($rekordy as $rekord) {
+            if(!isset($zamowienia[$rekord['id_zamowienia']])){
+                $zamowienia[$rekord['id_zamowienia']] = $rekord;
+            }
+            $zamowienia[$rekord['id_zamowienia']]['szczegoly'][] = $rekord;
+
+        }
+
+        return $zamowienia;
+    }
+
 }
