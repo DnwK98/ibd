@@ -21,7 +21,7 @@ foreach ($listaKsiazek as $ksiazkaWKoszyku) {
 <h2>Koszyk</h2>
 
 <form method="post" action="">
-	<table class="table table-striped table-condensed">
+	<table class="table table-striped table-condensed" id="koszyk">
 		<thead>
 			<tr>
 				<th>&nbsp;</th>
@@ -57,7 +57,7 @@ foreach ($listaKsiazek as $ksiazkaWKoszyku) {
 						</td>
 						<td><?= $ks['cena'] * $ks['liczba_sztuk'] ?></td>
 						<td style="white-space: nowrap">
-							<a href="koszyk.usun.php" title="usuń z koszyka">
+							<a class="aUsunZKoszyka" data-id-koszyka="<?=$ks['id_koszyka']?>" href="koszyk.usun.php" title="usuń z koszyka">
                                 <i class="fas fa-trash"></i>
 							</a>
 							<a href="ksiazki.szczegoly.php?id=<?=$ks['id']?>" title="szczegóły">
