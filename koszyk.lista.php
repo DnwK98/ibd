@@ -12,6 +12,10 @@ if(isset($_POST['zmien'])) {
 }
 
 $listaKsiazek = $koszyk->pobierzWszystkie();
+$calkowityKoszt = 0;
+foreach ($listaKsiazek as $ksiazkaWKoszyku) {
+    $calkowityKoszt += $ksiazkaWKoszyku['liczba_sztuk'] * $ksiazkaWKoszyku['cena'];
+}
 ?>
 
 <h2>Koszyk</h2>
@@ -65,8 +69,14 @@ $listaKsiazek = $koszyk->pobierzWszystkie();
 			</tbody>
 			<tfoot>
 				<tr>
-					<td colspan="5">&nbsp;</td>
-					<td colspan="3"><input type="submit" class="btn btn-primary btn-sm" name="zmien" value="Zmień liczbę sztuk" /></td>
+                    <td colspan="5">
+                        <div class="text-right">
+                            <input type="submit" class="btn btn-primary btn-sm" name="zmien" value="Zmień liczbę sztuk"/>
+                        </div>
+                    </td>
+                    <td colspan="3">&nbsp;
+                        Suma: <b><?= $calkowityKoszt ?></b>
+                    </td>
 				</tr>
 			</tfoot>
 		<?php else: ?>
