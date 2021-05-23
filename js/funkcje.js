@@ -17,9 +17,37 @@ const dodajDoKoszyka = async (e) => {
     }
 }
 
+const usunZKoszyka = async (e) => {
+    const a = e.target.closest('a.aUsunZKoszyka')
+
+    if (a) {
+        e.preventDefault()
+        const href = a.getAttribute('href')
+        const idKoszyka = a.getAttribute('data-id-koszyka')
+        const response = await fetch(href, {
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: "id_koszyka=" + idKoszyka
+        });
+
+        const txt = await response.text()
+
+        if (txt === 'ok') {
+            location.reload();
+        } else {
+            alert('Wystąpił błąd: ' + txt);
+        }
+    }
+}
+
 document.body.onload = () => {
     const ksiazki = document.querySelector('#ksiazki')
     if (ksiazki) {
         ksiazki.addEventListener('click', dodajDoKoszyka)
+    }
+
+    const koszyk = document.querySelector('#koszyk')
+    if (koszyk) {
+        koszyk.addEventListener('click', usunZKoszyka)
     }
 }

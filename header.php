@@ -1,14 +1,21 @@
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL | E_STRICT);
+session_start();
 
 define('ROK_AKADEMICKI', (date('Y') - 1) . '/' . date('Y'));
 
 require_once 'vendor/autoload.php';
 
+use Ibd\Koszyk;
 use Ibd\Menu;
 
+$koszyk = new Koszyk();
+
 $liczbaKsiazekWKoszyku = 0;
+foreach ($koszyk->pobierzWszystkie() as $ksiazkaWKoszyku) {
+    $liczbaKsiazekWKoszyku += $ksiazkaWKoszyku['liczba_sztuk'];
+}
 $koszykHtml = "<span class='badge badge-dark' id='wKoszyku'>$liczbaKsiazekWKoszyku</span>";
 ?>
 

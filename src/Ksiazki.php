@@ -90,7 +90,7 @@ class Ksiazki
 
         }
         if (!empty($params['id_kategorii'])) {
-            $sql .= "AND k.id_kategorii = :id_kategorii ";
+            $sql .= " AND k.id_kategorii = :id_kategorii ";
             $parametry['id_kategorii'] = $params['id_kategorii'];
         }
 

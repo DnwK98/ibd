@@ -1,6 +1,6 @@
 <?php
 require_once 'vendor/autoload.php';
-session_start();
+include 'header.php';
 
 use Ibd\Koszyk;
 
@@ -12,14 +12,16 @@ if(isset($_POST['zmien'])) {
 }
 
 $listaKsiazek = $koszyk->pobierzWszystkie();
-
-include 'header.php';
+$calkowityKoszt = 0;
+foreach ($listaKsiazek as $ksiazkaWKoszyku) {
+    $calkowityKoszt += $ksiazkaWKoszyku['liczba_sztuk'] * $ksiazkaWKoszyku['cena'];
+}
 ?>
 
 <h2>Koszyk</h2>
 
 <form method="post" action="">
-	<table class="table table-striped table-condensed">
+	<table class="table table-striped table-condensed" id="koszyk">
 		<thead>
 			<tr>
 				<th>&nbsp;</th>
@@ -55,7 +57,7 @@ include 'header.php';
 						</td>
 						<td><?= $ks['cena'] * $ks['liczba_sztuk'] ?></td>
 						<td style="white-space: nowrap">
-							<a href="koszyk.usun.php" title="usuń z koszyka">
+							<a class="aUsunZKoszyka" data-id-koszyka="<?=$ks['id_koszyka']?>" href="koszyk.usun.php" title="usuń z koszyka">
                                 <i class="fas fa-trash"></i>
 							</a>
 							<a href="ksiazki.szczegoly.php?id=<?=$ks['id']?>" title="szczegóły">
@@ -67,8 +69,14 @@ include 'header.php';
 			</tbody>
 			<tfoot>
 				<tr>
-					<td colspan="5">&nbsp;</td>
-					<td colspan="3"><input type="submit" class="btn btn-primary btn-sm" name="zmien" value="Zmień liczbę sztuk" /></td>
+                    <td colspan="5">
+                        <div class="text-right">
+                            <input type="submit" class="btn btn-primary btn-sm" name="zmien" value="Zmień liczbę sztuk"/>
+                        </div>
+                    </td>
+                    <td colspan="3">&nbsp;
+                        Suma: <b><?= $calkowityKoszt ?></b>
+                    </td>
 				</tr>
 			</tfoot>
 		<?php else: ?>
