@@ -72,6 +72,9 @@ foreach ($listaKsiazek as $ksiazkaWKoszyku) {
                     <td colspan="5">
                         <div class="text-right">
                             <input type="submit" class="btn btn-primary btn-sm" name="zmien" value="Zmień liczbę sztuk"/>
+                            <?php if (!empty($_SESSION['id_uzytkownika'])): ?>
+                                <a href="zamowienie.php" class="btn btn-primary btn-sm">Złóż zamówienie</a>
+                            <?php endif; ?>
                         </div>
                     </td>
                     <td colspan="3">&nbsp;
