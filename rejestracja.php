@@ -17,6 +17,7 @@ $v->addInstanceRule('uniqueLogin', function ($name, $login) use ($uzytkownicy){
 
 if (isset($_POST['zapisz'])) {
     $v->rule('required', ['imie', 'nazwisko', 'adres', 'email', 'login', 'haslo']);
+    $v->rule('email', ['email']);
     $v->rule('uniqueEmail', ['email']);
     $v->rule('uniqueLogin', ['login']);
 
