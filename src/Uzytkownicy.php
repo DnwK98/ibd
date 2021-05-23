@@ -32,7 +32,7 @@ class Uzytkownicy
             'telefon' => $dane['telefon'],
             'email' => $dane['email'],
             'login' => $dane['login'],
-            'haslo' => md5($dane['haslo']),
+            'haslo' => password_hash($dane['haslo'], PASSWORD_BCRYPT),
             'grupa' => $grupa
         ]);
     }
@@ -47,10 +47,13 @@ class Uzytkownicy
      */
     public function zaloguj(string $login, string $haslo, string $grupa): bool
     {
-        $haslo = md5($haslo);
         $dane = $this->db->pobierzWszystko(
-            "SELECT * FROM uzytkownicy WHERE login = :login AND haslo = '$haslo' AND grupa = '$grupa'", ['login' => $login]
+            "SELECT * FROM uzytkownicy WHERE login = :login AND grupa = '$grupa'", ['login' => $login]
         );
+
+        if(!password_verify($haslo, $dane[0]['haslo'])){
+            return false;
+        }
 
         if ($dane) {
             $_SESSION['id_uzytkownika'] = $dane[0]['id'];
