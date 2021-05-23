@@ -1,6 +1,7 @@
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL | E_STRICT);
+session_start();
 
 define('ROK_AKADEMICKI', (date('Y') - 1) . '/' . date('Y'));
 

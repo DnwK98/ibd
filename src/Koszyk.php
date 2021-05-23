@@ -79,4 +79,33 @@ class Koszyk
 		}
 	}
 
+    public function pobierzKsiazke(int $id): ?array
+    {
+        $sql = "
+			SELECT ks.*, ko.liczba_sztuk, ko.id AS id_koszyka
+			FROM ksiazki ks JOIN koszyk ko ON ks.id = ko.id_ksiazki
+			WHERE ko.id_sesji = :id_sesji
+			    AND ks.id = :id_ksiazki
+			ORDER BY ko.data_dodania DESC";
+
+        $ksiazki = $this->db->pobierzWszystko($sql, [
+            'id_sesji' => session_id(),
+            'id_ksiazki' => $id
+        ]);
+
+        foreach ($ksiazki as $ksiazka){
+            return $ksiazka;
+        }
+
+        return null;
+    }
+
+	public function zwiekszLiczbeSztuk(int $idKsiazki, int $liczbaSztuk = 1): void
+    {
+        if($ksiazka = $this->pobierzKsiazke($idKsiazki)) {
+            $ilosc = $ksiazka['liczba_sztuk'] + $liczbaSztuk;
+            $this->db->aktualizuj('koszyk', ['liczba_sztuk' => $ilosc], $ksiazka['id_koszyka']);
+        }
+    }
+
 }
