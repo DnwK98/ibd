@@ -16,9 +16,35 @@ class Autorzy
 	 *
 	 * @return string
      */
-	public function pobierzSelect(): string
+	public function pobierzSelect(array $params): array
     {
-        return "SELECT * FROM autorzy WHERE 1=1 ";
+        $sql = "SELECT * FROM autorzy a WHERE 1=1 ";
+
+        // dodawanie warunków do zapytanie
+        $parametry = [];
+        if (!empty($params['szukaj'])) {
+            $czesciFrazy = [];
+            foreach (['a.nazwisko', 'a.imie'] as $kolumna){
+                $nazwaParametru = "param_" . (count($parametry) + 1);
+                $czesciFrazy[] = "$kolumna LIKE :{$nazwaParametru}";
+                $parametry[$nazwaParametru] = "%{$params['szukaj']}%";
+            }
+            $sqlFrazy = implode(' OR ', $czesciFrazy);
+            $sql .= "AND ($sqlFrazy)";
+        }
+
+        // dodawanie sortowania
+        if (!empty($params['sortowanie'])) {
+            $kolumny = ['a.nazwisko'];
+            $kierunki = ['ASC', 'DESC'];
+            [$kolumna, $kierunek] = explode(' ', $params['sortowanie']);
+
+            if (in_array($kolumna, $kolumny) && in_array($kierunek, $kierunki)) {
+                $sql .= " ORDER BY " . $params['sortowanie'];
+            }
+        }
+
+        return ['sql' => $sql, 'parametry' => $parametry];
 	}
 
 	/**
@@ -27,9 +53,9 @@ class Autorzy
 	 * @param string $select
 	 * @return array
 	 */
-	public function pobierzWszystko(string $select): array
+	public function pobierzWszystko(string $select, array $parametry): array
     {
-		return $this->db->pobierzWszystko($select);
+		return $this->db->pobierzWszystko($select, $parametry);
 	}
 
 	/**
