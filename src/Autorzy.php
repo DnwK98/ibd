@@ -18,7 +18,11 @@ class Autorzy
      */
 	public function pobierzSelect(array $params): array
     {
-        $sql = "SELECT * FROM autorzy a WHERE 1=1 ";
+        $sql = "
+            SELECT a.id, a.imie, a.nazwisko, COUNT(*) as liczba
+            FROM autorzy a  
+                LEFT JOIN ksiazki k on a.id = k.id_autora
+            WHERE 1=1 ";
 
         // dodawanie warunków do zapytanie
         $parametry = [];
@@ -33,6 +37,7 @@ class Autorzy
             $sql .= "AND ($sqlFrazy)";
         }
 
+        $sql .= 'GROUP BY 1,2,3';
         // dodawanie sortowania
         if (!empty($params['sortowanie'])) {
             $kolumny = ['a.nazwisko'];

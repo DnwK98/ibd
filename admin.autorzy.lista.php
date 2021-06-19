@@ -53,6 +53,7 @@ include 'admin.header.php';
             <th>Id</th>
             <th>Imię</th>
             <th>Nazwisko</th>
+            <th>Liczba książek</th>
             <th>&nbsp;</th>
         </tr>
     </thead>
@@ -62,6 +63,7 @@ include 'admin.header.php';
                 <td><?= $a['id'] ?></td>
                 <td><?= $a['imie'] ?></td>
                 <td><?= $a['nazwisko'] ?></td>
+                <td><?= $a['liczba'] ?></td>
                 <td>
                     <a href="admin.autorzy.edycja.php?id=<?= $a['id'] ?>" title="edycja" class="aEdytujAutora"><em class="fas fa-pencil-alt"></em></a>
                     <a href="admin.autorzy.usun.php?id=<?= $a['id'] ?>" title="usuń" class="aUsunAutora"><em class="fas fa-trash"></em></a>
