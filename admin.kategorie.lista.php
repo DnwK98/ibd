@@ -2,10 +2,9 @@
 
 require_once 'vendor/autoload.php';
 
-use Ibd\Autorzy;
 
-$autorzy = new Autorzy();
-$zapytanie = $autorzy->pobierzSelect($_GET);
+$kategorie = new \Ibd\Kategorie();
+$zapytanie = $kategorie->pobierzSelect($_GET);
 
 // dodawanie warunków stronicowania i generowanie linków do stron
 $stronicowanie = new \Ibd\Stronicowanie($_GET, $zapytanie['parametry']);
@@ -13,7 +12,7 @@ $podsumowanieListy = $stronicowanie->pobierzPodsumowanie($zapytanie['sql']);
 $linki = $stronicowanie->pobierzLinki($zapytanie['sql'], 'admin.autorzy.lista.php');
 $select = $stronicowanie->dodajLimit($zapytanie['sql']);
 
-$lista = $autorzy->pobierzWszystko($select, $zapytanie['parametry']);
+$lista = $kategorie->pobierzWszystko($select, $zapytanie['parametry']);
 
 include 'admin.header.php';
 ?>
@@ -24,7 +23,7 @@ include 'admin.header.php';
 </h2>
 
 <?php if (isset($_GET['msg']) && $_GET['msg'] == 1): ?>
-    <p class="alert alert-success">Autor został dodany.</p>
+    <p class="alert alert-success">Kategoria została dodana.</p>
 <?php endif; ?>
     <form method="get" action="" class="form-inline mb-4">
         <input type="text" name="szukaj" placeholder="szukaj" class="form-control form-control-sm mr-2"
@@ -32,13 +31,13 @@ include 'admin.header.php';
 
         <select name="sortowanie" id="sortowanie" class="form-control form-control-sm mr-2">
             <option value="">sortowanie</option>
-            <option value="a.nazwisko ASC"
-                <?= ($_GET['sortowanie'] ?? '') == 'a.nazwisko ASC' ? 'selected' : '' ?>
-            >Nazwiksu rosnąco
+            <option value="k.nazwa ASC"
+                <?= ($_GET['sortowanie'] ?? '') == 'k.nazwa ASC' ? 'selected' : '' ?>
+            >Nazwie rosnąco
             </option>
-            <option value="a.nazwisko DESC"
-                <?= ($_GET['sortowanie'] ?? '') == 'a.nazwisko DESC' ? 'selected' : '' ?>
-            >Nazwisku malejąco
+            <option value="k.nazwa DESC"
+                <?= ($_GET['sortowanie'] ?? '') == 'k.nazwa DESC' ? 'selected' : '' ?>
+            >Nazwie malejąco
             </option>
         </select>
 
@@ -51,9 +50,7 @@ include 'admin.header.php';
     <thead>
         <tr>
             <th>Id</th>
-            <th>Imię</th>
-            <th>Nazwisko</th>
-            <th>Liczba książek</th>
+            <th>Nazwa</th>
             <th>&nbsp;</th>
         </tr>
     </thead>
@@ -61,14 +58,10 @@ include 'admin.header.php';
         <?php foreach ($lista as $a): ?>
             <tr>
                 <td><?= $a['id'] ?></td>
-                <td><?= $a['imie'] ?></td>
-                <td><?= $a['nazwisko'] ?></td>
-                <td><?= $a['liczba'] ?></td>
+                <td><?= $a['nazwa'] ?></td>
                 <td>
-                    <a href="admin.autorzy.edycja.php?id=<?= $a['id'] ?>" title="edycja" class="aEdytujAutora"><em class="fas fa-pencil-alt"></em></a>
-                    <?php if($a['liczba'] == 0): ?>
-                    <a href="admin.autorzy.usun.php?id=<?= $a['id'] ?>" title="usuń" class="aUsunAutora"><em class="fas fa-trash"></em></a>
-                    <?php endif; ?>
+                    <a href="admin.kategorie.edycja.php?id=<?= $a['id'] ?>" title="edycja" class="aEdytujAutora"><em class="fas fa-pencil-alt"></em></a>
+                    <a href="admin.kategorie.usun.php?id=<?= $a['id'] ?>" title="usuń" class="aUsunAutora"><em class="fas fa-trash"></em></a>
                 </td>
             </tr>
         <?php endforeach; ?>
