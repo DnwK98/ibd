@@ -96,7 +96,10 @@ class Autorzy
 	 */
 	public function usun(int $id): bool
     {
-		return $this->db->usun('autorzy', $id);
+		if(!empty($this->pobierzWszystko('SELECT * FROM ksiazki WHERE id_autora = :idAutora', ['idAutora' => $id]))){
+		    return false;
+        }
+        return $this->db->usun('autorzy', $id);
 	}
 
 	/**

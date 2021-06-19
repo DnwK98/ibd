@@ -66,7 +66,9 @@ include 'admin.header.php';
                 <td><?= $a['liczba'] ?></td>
                 <td>
                     <a href="admin.autorzy.edycja.php?id=<?= $a['id'] ?>" title="edycja" class="aEdytujAutora"><em class="fas fa-pencil-alt"></em></a>
+                    <?php if($a['liczba'] == 0): ?>
                     <a href="admin.autorzy.usun.php?id=<?= $a['id'] ?>" title="usuń" class="aUsunAutora"><em class="fas fa-trash"></em></a>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>
